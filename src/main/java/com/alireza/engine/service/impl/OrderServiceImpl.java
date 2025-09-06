@@ -21,11 +21,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository repository;
+    private final MatchingEngine matchingEngine;
 
     @Override
     public OrderDTO addOrder(OrderDTO orderBody) {
         Order order = OrderMapper.INSTANCE.toEntity(orderBody);
         order = repository.save(order);
+
+        // Add to Matching Engine (in-memory) and trigger matching
+        matchingEngine.addOrder(order);
+
         return OrderMapper.INSTANCE.toDTO(order);
     }
 
