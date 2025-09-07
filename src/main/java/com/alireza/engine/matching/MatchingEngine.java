@@ -2,6 +2,8 @@ package com.alireza.engine.matching;
 
 import com.alireza.engine.domain.Order;
 import com.alireza.engine.domain.OrderType;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -18,6 +20,11 @@ public class MatchingEngine {
     private final NavigableMap<Double, Deque<Order>> buyerOrders = new TreeMap<>(Comparator.reverseOrder());
     private final NavigableMap<Double, Deque<Order>> sellerOrders = new TreeMap<>();
     private final ReentrantLock lock = new ReentrantLock();
+
+    //For Benchmark Purpose
+    @Getter
+    @Setter
+    private boolean inTrade;
 
     public MatchingEngine() {
         // Daemon thread continuously runs and waits for matching
@@ -55,7 +62,7 @@ public class MatchingEngine {
                         buy.setQuantity(buy.getQuantity() - matchedQty);
                         sell.setQuantity(sell.getQuantity() - matchedQty);
 
-                        System.out.println("Matched " + matchedQty + " units at price " + lowestAsk);
+//                        System.out.println("Matched " + matchedQty + " units at price " + lowestAsk);
 
                         if (buy.getQuantity() > 0) buyerOrders.get(highestBid).addFirst(buy);
                         if (sell.getQuantity() > 0) sellerOrders.get(lowestAsk).addFirst(sell);
@@ -63,17 +70,19 @@ public class MatchingEngine {
                         if (buyerOrders.get(highestBid).isEmpty()) buyerOrders.remove(highestBid);
                         if (sellerOrders.get(lowestAsk).isEmpty()) sellerOrders.remove(lowestAsk);
                     }
+                } else {
+                    inTrade = false;
                 }
             } finally {
                 lock.unlock();
             }
 
-            try {
-                Thread.sleep(50); // small delay to reduce CPU usage
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
+//            try {
+//                Thread.sleep(50); // small delay to reduce CPU usage
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//                break;
+//            }
         }
     }
 }

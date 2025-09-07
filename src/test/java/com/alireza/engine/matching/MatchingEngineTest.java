@@ -5,6 +5,8 @@ import com.alireza.engine.domain.OrderType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -106,5 +108,21 @@ class MatchingEngineTest {
         // Quantities should remain unchanged
         assertEquals(10, buy.getQuantity());
         assertEquals(10, sell.getQuantity());
+    }
+
+    @Test
+    void testBenchMark() {
+        Instant start = Instant.now();
+
+        matchingEngine.setInTrade(true);
+        for (int i = 0; i < 100000; i++) {
+            matchingEngine.addOrder(new Order(1L, OrderType.BUY, 30000, 1));
+            matchingEngine.addOrder(new Order(1L, OrderType.SELL, 30000, 1));
+        }
+        while(matchingEngine.isInTrade()){Thread.yield();}
+        Instant end = Instant.now();
+        Duration duration = Duration.between(start, end);
+
+        System.out.println("Time to enqueue 100000 orders: " + duration.toMillis() + " ms");
     }
 }
