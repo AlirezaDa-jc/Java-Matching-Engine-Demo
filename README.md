@@ -101,5 +101,5 @@ For full license text, see `LICENSE` file.
 
 Created By: **Alireza Dolatabadi**\
 Email: `alireza.dolatabadi.jc@gmail.com`\
-GitHub: `https://github.com/AlirezaDa-jc/Java-Matching-Engine-Demo`
+GitHub: `[https://github.com/AlirezaDa-jc/Java-Matching-Engine-Demo](https://github.com/AlirezaDa-jc/Java-Matching-Engine-Demo)`
 
